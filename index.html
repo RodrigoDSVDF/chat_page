@@ -67,6 +67,7 @@
             height: 100%;
             z-index: -1;
             display: block;
+            background-color: black;
         }
 
         header {
@@ -264,60 +265,88 @@
     <script>
         // --- THREE.JS MATRIX BACKGROUND LOGIC ---
         const canvas = document.getElementById('matrix-bg');
-        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
         renderer.setPixelRatio(window.devicePixelRatio);
         
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.z = 5;
 
-        const digits = ['0', '1'];
-        const digitCount = 1000;
-        const digitGeometries = digits.map(d => {
+        // Criando as texturas para os dígitos Matrix Green
+        function createDigitTexture(digit) {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             canvas.width = 64;
             canvas.height = 64;
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 48px monospace';
+            
+            // Estilo Matrix: Verde neon com um leve glow
+            ctx.fillStyle = '#00FF41'; 
+            ctx.font = 'bold 50px monospace';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(d, 32, 32);
-            const texture = new THREE.CanvasTexture(canvas);
-            return new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0.2 });
-        });
+            
+            // Sombra para efeito de brilho
+            ctx.shadowColor = '#00FF41';
+            ctx.shadowBlur = 10;
+            
+            ctx.fillText(digit, 32, 32);
+            return new THREE.CanvasTexture(canvas);
+        }
 
+        const texture0 = createDigitTexture('0');
+        const texture1 = createDigitTexture('1');
+
+        const digitCount = 1200;
         const sprites = [];
+
         for (let i = 0; i < digitCount; i++) {
-            const material = digitGeometries[Math.floor(Math.random() * 2)];
+            const material = new THREE.SpriteMaterial({ 
+                map: Math.random() > 0.5 ? texture0 : texture1, 
+                transparent: true, 
+                opacity: Math.random() * 0.8 + 0.2 
+            });
             const sprite = new THREE.Sprite(material);
             
+            // Distribuindo em colunas (estilo matrix)
             sprite.position.set(
-                (Math.random() - 0.5) * 15,
-                (Math.random() - 0.5) * 15,
-                (Math.random() - 0.5) * 10
+                (Math.random() - 0.5) * 20, // Largura
+                (Math.random() - 0.5) * 20, // Altura inicial
+                (Math.random() - 0.5) * 10  // Profundidade
             );
             
-            sprite.scale.set(0.15, 0.15, 1);
-            sprite.userData = { speed: 0.02 + Math.random() * 0.05 };
+            sprite.scale.set(0.2, 0.2, 1);
+            
+            // Velocidade individual para as colunas
+            sprite.userData = { 
+                speed: 0.03 + Math.random() * 0.08,
+                flickerTimer: Math.random() * 100
+            };
             
             scene.add(sprite);
             sprites.push(sprite);
         }
 
         function animateMatrix() {
+            const time = Date.now() * 0.001;
+
             sprites.forEach(sprite => {
                 sprite.position.y -= sprite.userData.speed;
-                // Coloração baseada na posição (cyan e purple da marca)
-                const colorVal = (sprite.position.y + 7.5) / 15;
-                if (Math.random() > 0.995) sprite.material.opacity = 0.8; // Flicker
-                else sprite.material.opacity = 0.2;
+                
+                // Efeito de flicker/brilho aleatório
+                sprite.userData.flickerTimer += 1;
+                if (Math.sin(sprite.userData.flickerTimer * 0.1) > 0.9) {
+                    sprite.material.opacity = 1.0;
+                } else {
+                    sprite.material.opacity = 0.4;
+                }
 
-                if (sprite.position.y < -7.5) {
-                    sprite.position.y = 7.5;
-                    sprite.position.x = (Math.random() - 0.5) * 15;
+                // Reseta a posição quando sai da tela embaixo
+                if (sprite.position.y < -10) {
+                    sprite.position.y = 10;
+                    // Mantém na mesma "coluna" X para parecer chuva vertical
                 }
             });
+            
             renderer.render(scene, camera);
             requestAnimationFrame(animateMatrix);
         }
