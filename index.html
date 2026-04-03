@@ -1,0 +1,289 @@
+import streamlit as st
+import time
+import random
+import re
+
+# -----------------------------------------------------
+# 1. Configuração da Página
+# -----------------------------------------------------
+st.set_page_config(
+    page_title="Nexus | Ecossistema de Alta Performance",
+    page_icon="🧬",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
+
+# -----------------------------------------------------
+# 2. Integração: Meta Pixel Code (Facebook)
+# -----------------------------------------------------
+# O pixel é injetado como HTML inseguro para que o navegador execute o JS.
+pixel_code = """
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '640277028566260');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=640277028566260&ev=PageView&noscript=1"
+/></noscript>
+"""
+st.markdown(pixel_code, unsafe_allow_html=True)
+
+# -----------------------------------------------------
+# 3. Estilos (CSS) - Visual Cyberpunk (Input Elevado)
+# -----------------------------------------------------
+st.markdown("""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+    
+    html, body, [class*="css"] {
+        font-family: 'Inter', sans-serif;
+    }
+
+    #MainMenu, footer, header {visibility: hidden;}
+
+    /* AJUSTE MOBILE: Aumento do padding-bottom para subir o conteúdo */
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 9rem; 
+        max-width: 700px;
+    }
+
+    /* Chat do Assistente */
+    [data-testid="stChatMessage"]:has(div[aria-label="assistant"]) {
+        background-color: #1E1E2E; 
+        border-radius: 0px 15px 15px 15px;
+        border-left: 3px solid #00D4FF; 
+        margin-bottom: 15px;
+        padding: 1.2rem;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    /* Chat do Usuário */
+    [data-testid="stChatMessage"]:has(div[aria-label="user"]) {
+        background-color: #2C2C3E;
+        border-radius: 15px 15px 0px 15px;
+        border-right: 3px solid #9D00FF; 
+        margin-bottom: 15px;
+        padding: 1.2rem;
+        flex-direction: row-reverse;
+        text-align: right;
+    }
+
+    /* FIX: ELEVANDO A CAIXA DE INPUT */
+    .stChatInput {
+        position: fixed;
+        bottom: 50px; /* Alterado de 0 para 50px */
+        background-color: #0E1117;
+        padding-bottom: 20px;
+        padding-top: 10px;
+        z-index: 999;
+    }
+
+    /* Estilo do Botão Final (Seguro) */
+    .nexus-btn {
+        display: block;
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(90deg, #00C6FF, #0072FF);
+        color: white !important;
+        text-align: center;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 1.2rem;
+        margin-top: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 0 20px rgba(0, 198, 255, 0.3);
+        transition: transform 0.2s;
+    }
+    .nexus-btn:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0 30px rgba(0, 198, 255, 0.6);
+        color: white !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# -----------------------------------------------------
+# 4. Header Visual
+# -----------------------------------------------------
+st.markdown("""
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="background: linear-gradient(90deg, #00C6FF, #9D00FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; font-size: 2.5rem; margin-bottom: 5px;">
+            ECOSSISTEMA NEXUS
+        </h1>
+        <p style="color: #B0B0B0; font-size: 1rem; font-weight: 400;">Inteligência Artificial. Metodologia. Alta Performance.</p>
+    </div>
+""", unsafe_allow_html=True)
+
+# -----------------------------------------------------
+# 5. Funções e Narrativa (O Coração do Agente)
+# -----------------------------------------------------
+def efeito_humano(texto: str):
+    placeholder = st.empty()
+    mensagem_acumulada = ""
+    for word in texto.split(" "):
+        mensagem_acumulada += word + " "
+        placeholder.markdown(mensagem_acumulada + "▌")
+        time.sleep(0.04) 
+    placeholder.markdown(mensagem_acumulada)
+
+def extrair_nome(user_input: str) -> str:
+    patterns = [
+        r"(?:meu nome é|sou o|sou a|me chamo)\s*([A-Za-zÀ-ÿ]+)",
+        r"^[Oo]l[aá],?\s*([A-Za-zÀ-ÿ]+)",
+        r"^([A-Za-zÀ-ÿ]{3,})"
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, user_input, re.IGNORECASE)
+        if match:
+            return match.group(1).capitalize()
+    return ""
+
+EMPATIA = [
+    "Sua visão está alinhada com o futuro. O caos da informação exige organização. 🌌",
+    "Exato. A produtividade real vem da clareza, e é isso que vamos construir. 🧠",
+    "Perfeito. Ferramenta sem método é apenas ruído. Você busca a sinfonia. 🎻"
+]
+
+def gerar_resposta(step: int, input_user: str) -> str:
+    nome = st.session_state.get('nome', 'Visitante')
+    
+    # NARRATIVA DE VENDA E ENGENHARIA DE CONTEXTO
+    fluxo = {
+        1: f"Prazer, **{nome}**! Seja bem-vindo à fronteira da produtividade.\n\n"
+           "Muitos pensam que a I.A. veio para substituir o humano, mas no **Nexus**, acreditamos que ela veio para *libertá-lo*.\n\n"
+           "Hoje, você sente que passa mais tempo executando tarefas repetitivas do que realmente criando e planejando projetos importantes?",
+        
+        2: "Esse é o dilema moderno: temos acesso a tudo, mas não temos tempo para nada.\n\n"
+           "Por isso, o **Nexus não é apenas um curso**. É um **Ecossistema Completo**.\n\n"
+           "Imagine ter um ambiente onde várias I.A.s já estão treinadas e separadas por função (Marketing, Vendas, Dados), prontas para trabalhar para você.\n\n"
+           "O que mais te atrai: ter ferramentas prontas ou aprender a metodologia por trás delas?",
+        
+        3: f"Entendi. E o segredo para dominar isso é o que chamamos de **Engenharia de Contexto**.\n\n"
+           "Não basta digitar um comando. É preciso saber arquitetar a comunicação para que a máquina entenda a alma do seu projeto.\n\n"
+           "No Ecossistema Nexus, você recebe:\n"
+           "🧬 **I.A.s Especialistas:** Ferramentas segmentadas para cada área do seu trabalho;\n"
+           "🎓 **Academy Nexus:** Aulas que ensinam a lógica, não apenas o 'aperto de botão';\n"
+           "🗂️ **Organizadores Inteligentes:** Para colocar ordem no caos mental.\n\n"
+           "Faz sentido para você ter um 'quartel general' digital ao invés de ferramentas soltas?",
+        
+        4: "Essa centralização é o que gera a verdadeira Alta Performance.\n\n"
+           "Nosso propósito moral é devolver ao ser humano o que é mais precioso: **o tempo criativo**.\n\n"
+           "Queremos que você pare de ser um 'operador de software' e se torne o **Arquiteto de Soluções**.\n\n"
+           "Posso te mostrar como funciona o acesso a esse Ecossistema hoje?",
+        
+        5: "Excelente.\n\n"
+           "Ao entrar no Nexus, você acessa uma plataforma viva:\n"
+           "1. **Engenharia de Contexto:** Aprenda a estruturar projetos complexos com IA.\n"
+           "2. **Tools Suite:** I.A.s configuradas para Copywriting, Análise de Dados e Gestão.\n"
+           "3. **Comunidade de Vanguarda:** Estar entre os que moldam o futuro, não os que apenas assistem.\n\n"
+           "Você está pronto para assumir esse controle sobre sua produtividade?",
+        
+        6: f"Decisão sábia, {nome}. {random.choice(EMPATIA)}\n\n"
+           "Estamos democratizando o acesso a ferramentas que antes custariam milhares de reais em consultorias.\n\n"
+           "O valor para manter esse ecossistema é simbólico perto do tempo de vida que você ganha de volta.\n\n"
+           "Preparei seu acesso direto à plataforma logo abaixo."
+    }
+    return fluxo.get(step, "Estou por aqui! Se tiver dúvidas, só perguntar.")
+
+# -----------------------------------------------------
+# 6. Loop Principal (Execução)
+# -----------------------------------------------------
+if "step" not in st.session_state: st.session_state.step = 0
+if "mensagens" not in st.session_state: st.session_state.mensagens = []
+
+# Exibe Histórico
+for msg in st.session_state.mensagens:
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
+
+# Saudação Inicial
+if st.session_state.step == 0 and not st.session_state.mensagens:
+    time.sleep(0.5)
+    saudacao = (
+        "👋 Olá! Sou o **Artheris**, o Guardião do Ecossistema Nexus.\n\n"
+        "Minha função é conectar mentes brilhantes às ferramentas de I.A. que amplificam seu potencial.\n\n"
+        "Para iniciarmos essa conexão, **qual é o seu nome?**"
+    )
+    with st.chat_message("assistant"):
+        efeito_humano(saudacao)
+    st.session_state.mensagens.append({"role": "assistant", "content": saudacao})
+
+# Input do Usuário
+user_input = st.chat_input("Sua resposta aqui...")
+
+if user_input:
+    with st.chat_message("user"): st.markdown(user_input)
+    st.session_state.mensagens.append({"role": "user", "content": user_input})
+    
+    if st.session_state.step == 0:
+        nome = extrair_nome(user_input)
+        if nome:
+            st.session_state.nome = nome
+            st.session_state.step = 1
+            resp = gerar_resposta(1, user_input)
+        else:
+            resp = "Para personalizar sua experiência no Ecossistema, preciso saber seu nome. Como posso te chamar?"
+    else:
+        st.session_state.step += 1
+        resp = gerar_resposta(st.session_state.step, user_input)
+        
+    with st.chat_message("assistant"): efeito_humano(resp)
+    st.session_state.mensagens.append({"role": "assistant", "content": resp})
+
+    if st.session_state.step >= 6:
+        time.sleep(0.5)
+        st.rerun()
+
+# -----------------------------------------------------
+# 7. CTA FINAL (Estrutura Segura + Visual Bonito)
+# -----------------------------------------------------
+if st.session_state.step >= 6:
+    st.markdown("---")
+    
+    # Título do Card
+    st.markdown("""
+    <div style="text-align: center; margin-bottom: 10px;">
+        <h2 style="color: #fff; margin: 0; font-size: 1.5rem;">🔓 ACESSO LIBERADO</h2>
+        <p style="color: #bbb; font-size: 0.9rem;">Sua suite de ferramentas e engenharia de contexto.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Benefícios usando Colunas do Streamlit 
+    col1, col2 = st.columns([0.1, 0.9])
+    with col2:
+        st.markdown("""
+        * ✅ **I.A.s Especialistas** (Por função)
+        * ✅ **Aulas de Engenharia de Contexto**
+        * ✅ **Ferramentas de Organização**
+        """)
+    
+    # Preço
+    st.markdown("""
+    <div style="text-align: center; margin-top: 15px; border-top: 1px solid #333; padding-top: 10px;">
+        <span style="text-decoration: line-through; color: #666; font-size: 0.9rem;">De R$ 97,00</span>
+        <span style="color: #fff; margin: 0 5px;">por</span> 
+        <span style="color: #00D4FF; font-weight: 800; font-size: 1.5rem;">R$ 47,00</span>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Botão Link (Simples e Eficaz)
+    st.markdown("""
+        <a href="https://app.nexus-manual.com.br" target="_blank" class="nexus-btn">
+            ENTRAR NO NEXUS 🚀
+        </a>
+        
+        <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8rem;">
+            Acompanhe a evolução: <a href="https://instagram.com/nexus0rigin" target="_blank" style="color: #9D00FF; text-decoration: none; font-weight: bold;">@nexus0rigin</a>
+        </div>
+    """, unsafe_allow_html=True)
