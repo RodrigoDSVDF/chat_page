@@ -21,7 +21,6 @@
             --text-dim: #B0B0B0;
             --gradient-primary: linear-gradient(90deg, #00C6FF, #0072FF);
             
-            /* Degradê Metálico Ultra Realista */
             --metallic-silver: linear-gradient(
                 135deg, 
                 #f0f0f0 0%, 
@@ -114,8 +113,7 @@
             gap: 30px;
             z-index: 10;
             scrollbar-width: none;
-            /* Padding inferior aumentado para garantir que o CTA não seja cortado pela barra de input */
-            padding-bottom: 200px; 
+            padding-bottom: 220px; 
         }
 
         #chat-container::-webkit-scrollbar { display: none; }
@@ -214,7 +212,7 @@
         @media (max-width: 600px) {
             header h1 { font-size: 1.3rem; }
             #chat-container { 
-                padding: 30px 18px 220px 18px; 
+                padding: 30px 18px 240px 18px; 
                 gap: 25px; 
             }
             .message { 
@@ -232,23 +230,26 @@
 
             #final-cta {
                 padding: 35px 20px;
+                margin-top: 10px;
             }
         }
 
-        /* CTA FINAL - Agora como parte do fluxo do chat */
+        /* CTA FINAL */
         #final-cta {
             background: rgba(10, 10, 20, 0.98);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 30px;
             padding: 45px 30px;
-            margin: 20px 0;
+            margin-top: 40px;
+            margin-bottom: 20px;
             text-align: center;
-            display: none;
+            display: none; /* Começa oculto */
             backdrop-filter: blur(30px);
             box-shadow: 0 25px 70px rgba(0,0,0,0.9);
             width: 100%;
             max-width: 100%;
             animation: fadeIn 0.8s ease-out forwards;
+            align-self: center;
         }
 
         .cta-title { 
@@ -295,8 +296,8 @@
     </header>
 
     <main id="chat-container">
-        <!-- Mensagens via JS -->
-        <!-- O CTA final será injetado aqui dinamicamente -->
+        <!-- Mensagens serão inseridas aqui via JS -->
+        <!-- O CTA final está no final do container -->
         <div id="final-cta">
             <div class="cta-title">ACESSO LIBERADO 🔓</div>
             <p style="color: #bbb; font-size: 0.95rem;">Seu novo sistema operacional de inteligência.</p>
@@ -431,15 +432,13 @@
         async function addMessage(text, role) {
             const msgDiv = document.createElement('div');
             msgDiv.classList.add('message', role);
-            // Inserir antes do CTA se ele estiver visível, ou no final do chat
-            if (finalCta.style.display === 'block') {
-                chatContainer.insertBefore(msgDiv, finalCta);
-            } else {
-                chatContainer.appendChild(msgDiv);
-            }
+            
+            // GARANTE QUE A MENSAGEM SEJA INSERIDA SEMPRE ANTES DO CTA FINAL
+            chatContainer.insertBefore(msgDiv, finalCta);
             
             if (role === 'assistant') await typeText(text, msgDiv);
             else msgDiv.innerText = text;
+            
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
@@ -488,13 +487,14 @@
                         setTimeout(() => {
                             inputContainer.style.display = 'none';
                             finalCta.style.display = 'block';
-                            // Rolar para garantir que o CTA apareça
+                            
+                            // Scroll suave e preciso para o botão
                             setTimeout(() => {
                                 chatContainer.scrollTo({
                                     top: chatContainer.scrollHeight,
                                     behavior: 'smooth'
                                 });
-                            }, 100);
+                            }, 300);
                         }, 1000);
                     }
                 }
