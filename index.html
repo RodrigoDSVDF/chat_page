@@ -114,7 +114,8 @@
             gap: 30px;
             z-index: 10;
             scrollbar-width: none;
-            padding-bottom: 160px; 
+            /* Padding inferior aumentado para garantir que o CTA não seja cortado pela barra de input */
+            padding-bottom: 200px; 
         }
 
         #chat-container::-webkit-scrollbar { display: none; }
@@ -213,13 +214,13 @@
         @media (max-width: 600px) {
             header h1 { font-size: 1.3rem; }
             #chat-container { 
-                padding: 30px 18px 140px 18px; /* Mais espaço nas laterais e fundo */
+                padding: 30px 18px 220px 18px; 
                 gap: 25px; 
             }
             .message { 
-                max-width: 92%; /* Ajustado para não colar na borda oposta */
+                max-width: 92%;
                 font-size: 1rem; 
-                padding: 20px 24px; /* Padding interno generoso para mobile */
+                padding: 20px 24px;
                 line-height: 1.6;
             }
             .assistant { border-left-width: 4px; }
@@ -228,19 +229,26 @@
             button#send-btn { padding: 0 20px; font-size: 0.75rem; height: 48px; }
             .input-area { padding: 15px 15px 30px 15px; }
             .input-wrapper { padding-left: 20px; }
+
+            #final-cta {
+                padding: 35px 20px;
+            }
         }
 
-        /* CTA FINAL */
+        /* CTA FINAL - Agora como parte do fluxo do chat */
         #final-cta {
             background: rgba(10, 10, 20, 0.98);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 30px;
-            padding: 40px 30px;
+            padding: 45px 30px;
             margin: 20px 0;
             text-align: center;
             display: none;
             backdrop-filter: blur(30px);
             box-shadow: 0 25px 70px rgba(0,0,0,0.9);
+            width: 100%;
+            max-width: 100%;
+            animation: fadeIn 0.8s ease-out forwards;
         }
 
         .cta-title { 
@@ -270,9 +278,11 @@
             text-transform: uppercase;
             box-shadow: 0 12px 45px rgba(0, 198, 255, 0.45);
             transition: all 0.4s;
+            cursor: pointer;
         }
 
         .nexus-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        .nexus-btn:active { transform: translateY(0); }
     </style>
 </head>
 <body>
@@ -286,9 +296,7 @@
 
     <main id="chat-container">
         <!-- Mensagens via JS -->
-    </main>
-
-    <div id="final-cta-container" style="max-width: 700px; margin: 0 auto; width: 100%; padding: 0 20px; z-index: 10; position: relative;">
+        <!-- O CTA final será injetado aqui dinamicamente -->
         <div id="final-cta">
             <div class="cta-title">ACESSO LIBERADO 🔓</div>
             <p style="color: #bbb; font-size: 0.95rem;">Seu novo sistema operacional de inteligência.</p>
@@ -303,7 +311,7 @@
             </div>
             <a href="https://app.nexus-manual.com.br" target="_blank" class="nexus-btn">COMEÇAR AGORA 🚀</a>
         </div>
-    </div>
+    </main>
 
     <div class="input-area" id="input-container">
         <div class="input-wrapper">
@@ -423,7 +431,13 @@
         async function addMessage(text, role) {
             const msgDiv = document.createElement('div');
             msgDiv.classList.add('message', role);
-            chatContainer.appendChild(msgDiv);
+            // Inserir antes do CTA se ele estiver visível, ou no final do chat
+            if (finalCta.style.display === 'block') {
+                chatContainer.insertBefore(msgDiv, finalCta);
+            } else {
+                chatContainer.appendChild(msgDiv);
+            }
+            
             if (role === 'assistant') await typeText(text, msgDiv);
             else msgDiv.innerText = text;
             chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -474,7 +488,13 @@
                         setTimeout(() => {
                             inputContainer.style.display = 'none';
                             finalCta.style.display = 'block';
-                            chatContainer.scrollTop = chatContainer.scrollHeight;
+                            // Rolar para garantir que o CTA apareça
+                            setTimeout(() => {
+                                chatContainer.scrollTo({
+                                    top: chatContainer.scrollHeight,
+                                    behavior: 'smooth'
+                                });
+                            }, 100);
                         }, 1000);
                     }
                 }
