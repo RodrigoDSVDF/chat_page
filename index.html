@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nexus | Ecossistema de Alta Performance</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -10,20 +10,6 @@
     
     <!-- Three.js Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-    <!-- Meta Pixel Code (Facebook) -->
-    <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '640277028566260');
-    fbq('track', 'PageView');
-    </script>
 
     <style>
         :root {
@@ -35,16 +21,16 @@
             --text-dim: #B0B0B0;
             --gradient-primary: linear-gradient(90deg, #00C6FF, #0072FF);
             
-            /* Novo Degradê Metálico Profissional */
+            /* Degradê Metálico Ultra Realista */
             --metallic-silver: linear-gradient(
-                to bottom, 
-                #ffffff 0%, 
-                #e2e2e2 20%, 
-                #a0a0a0 45%, 
+                135deg, 
+                #f0f0f0 0%, 
+                #808080 20%, 
+                #e0e0e0 40%, 
                 #ffffff 50%, 
-                #909090 55%, 
-                #d3d3d3 80%, 
-                #f5f5f5 100%
+                #a0a0a0 60%, 
+                #dcdcdc 80%, 
+                #f0f0f0 100%
             );
         }
 
@@ -52,6 +38,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -59,14 +46,13 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             line-height: 1.6;
-            overflow-x: hidden;
+            overflow: hidden; /* Evita scroll duplo com o chat */
             display: flex;
             flex-direction: column;
             height: 100vh;
             position: relative;
         }
 
-        /* Galaxy Background */
         #galaxy-bg {
             position: fixed;
             top: 0;
@@ -78,114 +64,115 @@
         }
 
         header {
-            padding: 30px 20px;
+            padding: 20px 15px;
             text-align: center;
-            background: rgba(5, 5, 8, 0.5);
+            background: rgba(5, 5, 8, 0.6);
             backdrop-filter: blur(15px);
-            position: sticky;
-            top: 0;
             z-index: 100;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            flex-shrink: 0;
         }
 
         header h1 {
             font-weight: 800;
-            font-size: 1.8rem;
-            letter-spacing: 3px;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            
-            /* Aplicando o efeito metálico */
             background: var(--metallic-silver);
+            background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            
-            /* Sombra para destaque em fundos escuros */
-            filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.8)) brightness(1.1);
-            
-            /* Ajuste para evitar corte de letras altas */
+            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.5));
+            animation: silver-shine 5s linear infinite;
             line-height: 1.2;
             display: inline-block;
         }
 
+        @keyframes silver-shine {
+            to { background-position: 200% center; }
+        }
+
         header p {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: var(--text-dim);
-            margin-top: 8px;
-            letter-spacing: 2.5px;
+            margin-top: 5px;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            opacity: 0.8;
+            opacity: 0.7;
         }
 
         #chat-container {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
-            max-width: 750px;
+            padding: 15px;
+            max-width: 800px;
             margin: 0 auto;
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            padding-bottom: 160px;
+            gap: 15px;
             z-index: 10;
             scrollbar-width: none;
+            padding-bottom: 120px; /* Espaço para a barra de input */
         }
 
         #chat-container::-webkit-scrollbar { display: none; }
 
         .message {
-            max-width: 85%;
-            padding: 20px 24px;
+            max-width: 88%;
+            padding: 16px 20px;
             font-size: 0.95rem;
-            position: relative;
-            animation: fadeIn 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            animation: fadeIn 0.4s ease-out forwards;
             word-wrap: break-word;
             backdrop-filter: blur(10px);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            position: relative;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .assistant {
             align-self: flex-start;
             background-color: var(--assistant-bg);
-            border-radius: 4px 24px 24px 24px;
-            border-left: 3px solid rgba(255,255,255,0.4);
+            border-radius: 4px 20px 200px 20px;
+            border-left: 2px solid rgba(255,255,255,0.3);
         }
 
         .user {
             align-self: flex-end;
             background-color: var(--user-bg);
-            border-radius: 24px 24px 4px 24px;
-            border-right: 3px solid var(--accent-cyan);
+            border-radius: 20px 20px 4px 20px;
+            border-right: 2px solid var(--accent-cyan);
+            color: #fff;
         }
 
+        /* BARRA DE INPUT RESPONSIVA */
         .input-area {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: linear-gradient(transparent, var(--bg-color) 65%);
-            padding: 40px 15px 50px 15px;
+            background: linear-gradient(to top, var(--bg-color) 80%, transparent);
+            padding: 20px 15px 30px 15px;
             z-index: 100;
         }
 
         .input-wrapper {
-            max-width: 700px;
+            max-width: 600px;
             margin: 0 auto;
             display: flex;
-            gap: 12px;
-            background: rgba(25, 25, 40, 0.9);
-            padding: 10px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 15px 50px rgba(0,0,0,0.7);
-            backdrop-filter: blur(25px);
+            align-items: center;
+            gap: 8px;
+            background: rgba(20, 20, 30, 0.95);
+            padding: 6px 6px 6px 15px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(20px);
         }
 
         input {
@@ -193,74 +180,78 @@
             background: transparent;
             border: none;
             color: white;
-            padding: 12px 15px;
+            padding: 10px 0;
             font-size: 1rem;
             outline: none;
+            min-width: 0; /* Impede o input de empurrar o botão no mobile */
         }
 
         button#send-btn {
             background: var(--metallic-silver);
             border: none;
             color: #000;
-            padding: 0 30px;
-            border-radius: 14px;
+            height: 44px;
+            padding: 0 20px;
+            border-radius: 40px;
             font-weight: 800;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             text-transform: uppercase;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             letter-spacing: 1px;
+            flex-shrink: 0; /* Garante que o botão não encolha */
         }
         
-        button#send-btn:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.2);
-            box-shadow: 0 5px 20px rgba(255,255,255,0.2);
+        button#send-btn:active {
+            transform: scale(0.95);
+            filter: brightness(0.8);
+        }
+
+        /* MOBILE OVERRIDES */
+        @media (max-width: 480px) {
+            header h1 { font-size: 1.2rem; }
+            .message { max-width: 92%; font-size: 0.9rem; padding: 12px 16px; }
+            button#send-btn { padding: 0 15px; font-size: 0.7rem; }
+            .input-area { padding-bottom: 15px; }
         }
 
         #final-cta {
-            background: rgba(10, 10, 20, 0.9);
+            background: rgba(10, 10, 20, 0.95);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 28px;
-            padding: 40px;
-            margin: 20px 0;
+            border-radius: 24px;
+            padding: 30px 20px;
+            margin: 10px 0;
             text-align: center;
             display: none;
-            animation: fadeIn 1s ease-out;
             backdrop-filter: blur(20px);
         }
 
         .cta-title { 
             font-weight: 800; 
-            font-size: 1.7rem; 
-            margin-bottom: 15px;
+            font-size: 1.4rem; 
+            margin-bottom: 10px;
             background: var(--metallic-silver);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .benefits { text-align: left; margin: 25px 0; font-size: 0.95rem; list-style: none; display: inline-block; }
-        .benefits li { margin-bottom: 15px; display: flex; align-items: center; gap: 15px; }
-        .price .old { text-decoration: line-through; color: #666; font-size: 0.9rem; }
-        .price .new { color: #fff; font-weight: 800; font-size: 2.2rem; display: block; margin: 10px 0; }
+
+        .benefits { text-align: left; margin: 20px 0; font-size: 0.85rem; list-style: none; display: inline-block; }
+        .benefits li { margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .price .old { text-decoration: line-through; color: #666; font-size: 0.8rem; }
+        .price .new { color: #fff; font-weight: 800; font-size: 1.8rem; display: block; margin: 5px 0; }
 
         .nexus-btn {
             display: block;
             width: 100%;
-            padding: 22px;
+            padding: 18px;
             background: var(--gradient-primary);
             color: white;
             text-decoration: none;
-            border-radius: 16px;
+            border-radius: 12px;
             font-weight: 800;
-            font-size: 1.2rem;
+            font-size: 1rem;
             text-transform: uppercase;
-            box-shadow: 0 10px 40px rgba(0, 198, 255, 0.4);
-            transition: all 0.4s;
-        }
-
-        .nexus-btn:hover {
-            transform: scale(1.03);
-            filter: brightness(1.1);
+            box-shadow: 0 10px 30px rgba(0, 198, 255, 0.3);
         }
     </style>
 </head>
@@ -277,14 +268,14 @@
         <!-- Mensagens via JS -->
     </main>
 
-    <div id="final-cta-container" style="max-width: 750px; margin: 0 auto; width: 100%; padding: 0 20px; z-index: 10; position: relative;">
+    <div id="final-cta-container" style="max-width: 600px; margin: 0 auto; width: 100%; padding: 0 15px; z-index: 10; position: relative;">
         <div id="final-cta">
-            <div class="cta-title">🔓 ACESSO LIBERADO</div>
-            <p style="color: #bbb; font-size: 0.9rem;">Seu novo sistema operacional de inteligência.</p>
+            <div class="cta-title">ACESSO LIBERADO</div>
+            <p style="color: #bbb; font-size: 0.8rem;">Seu novo sistema operacional de inteligência.</p>
             <ul class="benefits">
-                <li><span>✅</span> <strong>I.A.s de Elite</strong> (Configuradas para performance)</li>
-                <li><span>✅</span> <strong>Metodologia Nexus</strong> (Contexto Avançado)</li>
-                <li><span>✅</span> <strong>Workspaces</strong> (Prontos para implementar)</li>
+                <li><span>✅</span> <strong>I.A.s de Elite</strong> configuradas</li>
+                <li><span>✅</span> <strong>Metodologia</strong> de Contexto</li>
+                <li><span>✅</span> <strong>Sistemas</strong> de Organização</li>
             </ul>
             <div class="price">
                 <span class="old">De R$ 97,00</span>
@@ -296,7 +287,7 @@
 
     <div class="input-area" id="input-container">
         <div class="input-wrapper">
-            <input type="text" id="user-input" placeholder="Responda aqui..." autocomplete="off">
+            <input type="text" id="user-input" placeholder="Sua resposta..." autocomplete="off">
             <button id="send-btn">ENVIAR</button>
         </div>
     </div>
@@ -304,7 +295,7 @@
     <script>
         // --- THREE.JS GALAXY ENGINE ---
         const canvas = document.getElementById('galaxy-bg');
-        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
@@ -315,15 +306,15 @@
         camera.rotation.x = -0.3;
 
         const parameters = {
-            count: 45000,
-            size: 0.005,
+            count: 25000, // Reduzido para performance mobile
+            size: 0.008,
             radius: 5,
             branches: 3,
-            spin: 0.8,
-            randomness: 0.45,
-            randomnessPower: 3.5,
-            insideColor: '#00d4ff', // Cyan Nexus
-            outsideColor: '#9d00ff'  // Purple Nexus
+            spin: 1,
+            randomness: 0.5,
+            randomnessPower: 3,
+            insideColor: '#00d4ff',
+            outsideColor: '#5a00ff'
         };
 
         let geometry, material, points;
@@ -345,13 +336,13 @@
                 const randomY = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * parameters.randomness * radius;
                 const randomZ = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * parameters.randomness * radius;
 
-                positions[i3    ] = Math.cos(branchAngle + spinAngle) * radius + randomX;
+                positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
                 positions[i3 + 1] = randomY * 0.5;
                 positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
 
                 const mixedColor = colorInside.clone();
                 mixedColor.lerp(colorOutside, radius / parameters.radius);
-                colors[i3    ] = mixedColor.r;
+                colors[i3] = mixedColor.r;
                 colors[i3 + 1] = mixedColor.g;
                 colors[i3 + 2] = mixedColor.b;
             }
@@ -382,7 +373,7 @@
         const clock = new THREE.Clock();
         const animate = () => {
             const elapsedTime = clock.getElapsedTime();
-            points.rotation.y = elapsedTime * 0.04;
+            points.rotation.y = elapsedTime * 0.05;
             renderer.render(scene, camera);
             window.requestAnimationFrame(animate);
         };
@@ -403,11 +394,10 @@
             let currentText = "";
             for (const word of words) {
                 currentText += word + " ";
-                element.innerHTML = currentText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>') + "▌";
+                element.innerHTML = currentText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
                 chatContainer.scrollTop = chatContainer.scrollHeight;
-                await new Promise(resolve => setTimeout(resolve, 30));
+                await new Promise(resolve => setTimeout(resolve, 25));
             }
-            element.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
         }
 
         async function addMessage(text, role) {
@@ -430,11 +420,11 @@
 
         function getFluxo(step) {
             const fluxos = {
-                1: `Prazer, **${userName}**! Seja bem-vindo à fronteira da produtividade.\n\nNo **Nexus**, acreditamos que a I.A. veio para libertar o tempo humano das tarefas medíocres.\n\nHoje, você sente que sua produtividade está limitada pela execução manual de processos?`,
-                2: `É um problema comum: excesso de ferramentas, zero método.\n\nO **Nexus** une a metodologia de alta performance à inteligência artificial de elite.\n\nVocê prefere aprender a criar suas próprias soluções ou receber as ferramentas prontas?`,
-                3: `O segredo reside na **Engenharia de Contexto**.\n\nNo Nexus, você acessa:\n🧬 **I.A.s Especialistas** calibradas;\n🎓 **Treinamento Estratégico**;\n🗂️ **Sistemas de Organização**.\n\nFaz sentido centralizar sua inteligência em um único ecossistema?`,
-                4: `Essa centralização é o que diferencia os operadores dos **Arquitetos de Soluções**.\n\nPosso te mostrar como funciona o ecossistema por dentro agora?`,
-                5: `Excelente decisão.\n\nAo entrar no Nexus, você assume o controle das melhores tecnologias configuradas para resultados reais.\n\nEstá pronto para elevar seu nível de jogo?`,
+                1: `Prazer, **${userName}**! Seja bem-vindo à fronteira da produtividade.\n\nNo **Nexus**, acreditamos que a I.A. veio para libertar o tempo humano.\n\nHoje, você sente que sua produtividade está limitada pela execução manual?`,
+                2: `Exatamente. O **Nexus** une método e I.A. de elite.\n\nVocê prefere aprender a criar suas próprias soluções ou receber as ferramentas prontas?`,
+                3: `O segredo reside na **Engenharia de Contexto**.\n\nNo Nexus, você acessa I.A.s especialistas e sistemas prontos para implementar.\n\nFaz sentido centralizar sua inteligência em um único lugar?`,
+                4: `Essa centralização cria os **Arquitetos de Soluções**.\n\nPosso te mostrar o ecossistema por dentro agora?`,
+                5: `Excelente. Ao entrar no Nexus, você assume o controle.\n\nEstá pronto para elevar seu nível de jogo?`,
                 6: `Seja bem-vindo ao futuro, ${userName}.\n\nSeu acesso prioritário está liberado abaixo.`
             };
             return fluxos[step];
@@ -460,11 +450,12 @@
                 if (resp) {
                     await addMessage(resp, 'assistant');
                     if (step >= 6) {
-                        inputContainer.style.display = 'none';
+                        inputContainer.style.opacity = '0';
                         setTimeout(() => {
+                            inputContainer.style.display = 'none';
                             finalCta.style.display = 'block';
                             chatContainer.scrollTop = chatContainer.scrollHeight;
-                        }, 1000);
+                        }, 800);
                     }
                 }
             }
@@ -475,7 +466,7 @@
 
         window.onload = async () => {
             await new Promise(r => setTimeout(r, 800));
-            await addMessage("👋 Olá! Sou o **Artheris**, o Guardião do Ecossistema Nexus.\n\nQual é o seu nome para começarmos?", 'assistant');
+            await addMessage("👋 Olá! Sou o **Artheris**, o Guardião do Nexus.\n\nQual é o seu nome para começarmos?", 'assistant');
         };
     </script>
 </body>
