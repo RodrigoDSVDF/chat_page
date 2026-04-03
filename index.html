@@ -14,8 +14,8 @@
     <style>
         :root {
             --bg-color: #050508;
-            --assistant-bg: rgba(18, 18, 30, 0.9);
-            --user-bg: rgba(35, 35, 60, 0.8);
+            --assistant-bg: rgba(18, 18, 30, 0.92);
+            --user-bg: rgba(35, 35, 60, 0.85);
             --accent-cyan: #00D4FF;
             --text-main: #FFFFFF;
             --text-dim: #B0B0B0;
@@ -66,7 +66,7 @@
         header {
             padding: 25px 15px;
             text-align: center;
-            background: rgba(5, 5, 8, 0.7);
+            background: rgba(5, 5, 8, 0.75);
             backdrop-filter: blur(20px);
             z-index: 100;
             border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -105,34 +105,34 @@
         #chat-container {
             flex: 1;
             overflow-y: auto;
-            padding: 25px 20px;
+            padding: 30px 20px;
             max-width: 850px;
             margin: 0 auto;
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 30px;
             z-index: 10;
             scrollbar-width: none;
-            padding-bottom: 140px; 
+            padding-bottom: 160px; 
         }
 
         #chat-container::-webkit-scrollbar { display: none; }
 
         .message {
-            max-width: 90%;
-            padding: 22px 28px; /* Aumentado para não ficar próximo da borda */
+            max-width: 85%;
+            padding: 24px 30px;
             font-size: 1rem;
             animation: fadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
             word-wrap: break-word;
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.12);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
             position: relative;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -140,15 +140,15 @@
             align-self: flex-start;
             background-color: var(--assistant-bg);
             border-radius: 4px 28px 28px 28px;
-            border-left: 4px solid rgba(255,255,255,0.4);
-            color: #f0f0f0;
+            border-left: 5px solid rgba(255,255,255,0.5);
+            color: #f8f8f8;
         }
 
         .user {
             align-self: flex-end;
             background-color: var(--user-bg);
             border-radius: 28px 28px 4px 28px;
-            border-right: 4px solid var(--accent-cyan);
+            border-right: 5px solid var(--accent-cyan);
             color: #fff;
         }
 
@@ -158,8 +158,8 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background: linear-gradient(to top, var(--bg-color) 85%, transparent);
-            padding: 20px 20px 40px 20px;
+            background: linear-gradient(to top, var(--bg-color) 80%, transparent);
+            padding: 20px 20px 45px 20px;
             z-index: 100;
         }
 
@@ -169,12 +169,12 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            background: rgba(25, 25, 40, 0.98);
-            padding: 8px 8px 8px 24px;
+            background: rgba(20, 20, 35, 0.98);
+            padding: 10px 10px 10px 26px;
             border-radius: 50px;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 15px 45px rgba(0,0,0,0.6);
-            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255,255,255,0.25);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.7);
+            backdrop-filter: blur(30px);
         }
 
         input {
@@ -183,7 +183,7 @@
             border: none;
             color: white;
             padding: 12px 0;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             outline: none;
             min-width: 0;
         }
@@ -192,44 +192,55 @@
             background: var(--metallic-silver);
             border: none;
             color: #000;
-            height: 48px;
-            padding: 0 28px;
+            height: 52px;
+            padding: 0 32px;
             border-radius: 40px;
             font-weight: 800;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-transform: uppercase;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             letter-spacing: 1.5px;
             flex-shrink: 0;
         }
         
         button#send-btn:active {
-            transform: scale(0.92);
+            transform: scale(0.94);
             filter: brightness(0.9);
         }
 
         /* MOBILE OPTIMIZATION */
         @media (max-width: 600px) {
             header h1 { font-size: 1.3rem; }
-            #chat-container { padding: 20px 15px 120px 15px; gap: 20px; }
-            .message { max-width: 95%; font-size: 0.95rem; padding: 18px 22px; }
-            button#send-btn { padding: 0 18px; font-size: 0.75rem; height: 44px; }
-            .input-area { padding: 15px 15px 25px 15px; }
+            #chat-container { 
+                padding: 30px 18px 140px 18px; /* Mais espaço nas laterais e fundo */
+                gap: 25px; 
+            }
+            .message { 
+                max-width: 92%; /* Ajustado para não colar na borda oposta */
+                font-size: 1rem; 
+                padding: 20px 24px; /* Padding interno generoso para mobile */
+                line-height: 1.6;
+            }
+            .assistant { border-left-width: 4px; }
+            .user { border-right-width: 4px; }
+            
+            button#send-btn { padding: 0 20px; font-size: 0.75rem; height: 48px; }
+            .input-area { padding: 15px 15px 30px 15px; }
             .input-wrapper { padding-left: 20px; }
         }
 
         /* CTA FINAL */
         #final-cta {
-            background: rgba(10, 10, 20, 0.96);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(10, 10, 20, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 30px;
             padding: 40px 30px;
-            margin: 15px 0;
+            margin: 20px 0;
             text-align: center;
             display: none;
-            backdrop-filter: blur(25px);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            backdrop-filter: blur(30px);
+            box-shadow: 0 25px 70px rgba(0,0,0,0.9);
         }
 
         .cta-title { 
@@ -241,15 +252,15 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .benefits { text-align: left; margin: 25px 0; font-size: 0.9rem; list-style: none; display: inline-block; }
-        .benefits li { margin-bottom: 12px; display: flex; align-items: center; gap: 12px; }
+        .benefits { text-align: left; margin: 25px 0; font-size: 0.95rem; list-style: none; display: inline-block; }
+        .benefits li { margin-bottom: 14px; display: flex; align-items: center; gap: 12px; }
         .price .old { text-decoration: line-through; color: #777; font-size: 0.9rem; }
-        .price .new { color: #fff; font-weight: 800; font-size: 2rem; display: block; margin: 8px 0; }
+        .price .new { color: #fff; font-weight: 800; font-size: 2.2rem; display: block; margin: 10px 0; }
 
         .nexus-btn {
             display: block;
             width: 100%;
-            padding: 20px;
+            padding: 22px;
             background: var(--gradient-primary);
             color: white;
             text-decoration: none;
@@ -257,11 +268,11 @@
             font-weight: 800;
             font-size: 1.1rem;
             text-transform: uppercase;
-            box-shadow: 0 10px 40px rgba(0, 198, 255, 0.4);
+            box-shadow: 0 12px 45px rgba(0, 198, 255, 0.45);
             transition: all 0.4s;
         }
 
-        .nexus-btn:hover { transform: scale(1.02); filter: brightness(1.1); }
+        .nexus-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
     </style>
 </head>
 <body>
@@ -277,10 +288,10 @@
         <!-- Mensagens via JS -->
     </main>
 
-    <div id="final-cta-container" style="max-width: 700px; margin: 0 auto; width: 100%; padding: 0 15px; z-index: 10; position: relative;">
+    <div id="final-cta-container" style="max-width: 700px; margin: 0 auto; width: 100%; padding: 0 20px; z-index: 10; position: relative;">
         <div id="final-cta">
             <div class="cta-title">ACESSO LIBERADO 🔓</div>
-            <p style="color: #bbb; font-size: 0.9rem;">Seu novo sistema operacional de inteligência.</p>
+            <p style="color: #bbb; font-size: 0.95rem;">Seu novo sistema operacional de inteligência.</p>
             <ul class="benefits">
                 <li><span>✅</span> <strong>I.A.s de Elite</strong> pré-configuradas</li>
                 <li><span>✅</span> <strong>Metodologia</strong> de Engenharia de Contexto</li>
@@ -315,12 +326,12 @@
         camera.rotation.x = -0.25;
 
         const parameters = {
-            count: 30000,
-            size: 0.007,
+            count: 35000,
+            size: 0.008,
             radius: 5,
             branches: 3,
-            spin: 1,
-            randomness: 0.5,
+            spin: 1.2,
+            randomness: 0.4,
             randomnessPower: 3,
             insideColor: '#00d4ff',
             outsideColor: '#6a00ff'
@@ -382,7 +393,7 @@
         const clock = new THREE.Clock();
         const animate = () => {
             const elapsedTime = clock.getElapsedTime();
-            points.rotation.y = elapsedTime * 0.06;
+            points.rotation.y = elapsedTime * 0.05;
             renderer.render(scene, camera);
             window.requestAnimationFrame(animate);
         };
