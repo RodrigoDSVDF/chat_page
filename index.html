@@ -279,15 +279,15 @@
             canvas.width = 64;
             canvas.height = 64;
             
-            // Estilo Matrix: Verde neon com um leve glow
-            ctx.fillStyle = '#00FF41'; 
-            ctx.font = 'bold 50px monospace';
+            // Estilo Matrix: Verde neon idêntico à imagem
+            ctx.fillStyle = '#22FF22'; 
+            ctx.font = 'bold 52px monospace';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             
-            // Sombra para efeito de brilho
-            ctx.shadowColor = '#00FF41';
-            ctx.shadowBlur = 10;
+            // Sombra para efeito de brilho suave
+            ctx.shadowColor = '#22FF22';
+            ctx.shadowBlur = 8;
             
             ctx.fillText(digit, 32, 32);
             return new THREE.CanvasTexture(canvas);
@@ -296,54 +296,64 @@
         const texture0 = createDigitTexture('0');
         const texture1 = createDigitTexture('1');
 
-        const digitCount = 1200;
+        const columnCount = 50; // Quantidade de colunas verticais
+        const spritesPerColumn = 25; // Quantos números em cada coluna vertical
         const sprites = [];
 
-        for (let i = 0; i < digitCount; i++) {
-            const material = new THREE.SpriteMaterial({ 
-                map: Math.random() > 0.5 ? texture0 : texture1, 
-                transparent: true, 
-                opacity: Math.random() * 0.8 + 0.2 
-            });
-            const sprite = new THREE.Sprite(material);
-            
-            // Distribuindo em colunas (estilo matrix)
-            sprite.position.set(
-                (Math.random() - 0.5) * 20, // Largura
-                (Math.random() - 0.5) * 20, // Altura inicial
-                (Math.random() - 0.5) * 10  // Profundidade
-            );
-            
-            sprite.scale.set(0.2, 0.2, 1);
-            
-            // Velocidade individual para as colunas
-            sprite.userData = { 
-                speed: 0.03 + Math.random() * 0.08,
-                flickerTimer: Math.random() * 100
-            };
-            
-            scene.add(sprite);
-            sprites.push(sprite);
+        // Distribuindo em colunas alinhadas
+        for (let col = 0; col < columnCount; col++) {
+            const xPos = (col / columnCount - 0.5) * 22; // Espaçamento horizontal fixo
+            const colSpeed = 0.02 + Math.random() * 0.06; // Cada coluna tem sua própria velocidade
+            const zPos = (Math.random() - 0.5) * 8; // Alguma profundidade para efeito 3D
+
+            for (let i = 0; i < spritesPerColumn; i++) {
+                const material = new THREE.SpriteMaterial({ 
+                    map: Math.random() > 0.5 ? texture0 : texture1, 
+                    transparent: true, 
+                    opacity: Math.random() * 0.6 + 0.2 
+                });
+                const sprite = new THREE.Sprite(material);
+                
+                // Posição inicial: X fixo por coluna, Y distribuído verticalmente
+                sprite.position.set(
+                    xPos,
+                    (i / spritesPerColumn - 0.5) * 20, 
+                    zPos
+                );
+                
+                sprite.scale.set(0.22, 0.22, 1);
+                
+                sprite.userData = { 
+                    speed: colSpeed,
+                    columnX: xPos,
+                    flickerTimer: Math.random() * 100,
+                    offsetY: (i / spritesPerColumn) * 20
+                };
+                
+                scene.add(sprite);
+                sprites.push(sprite);
+            }
         }
 
         function animateMatrix() {
-            const time = Date.now() * 0.001;
-
             sprites.forEach(sprite => {
+                // Movimento vertical contínuo
                 sprite.position.y -= sprite.userData.speed;
                 
-                // Efeito de flicker/brilho aleatório
-                sprite.userData.flickerTimer += 1;
-                if (Math.sin(sprite.userData.flickerTimer * 0.1) > 0.9) {
-                    sprite.material.opacity = 1.0;
+                // Flicker aleatório para simular o brilho da imagem
+                sprite.userData.flickerTimer += 0.05;
+                if (Math.random() > 0.99) {
+                    sprite.material.opacity = 1.0; // Brilho intenso súbito
                 } else {
-                    sprite.material.opacity = 0.4;
+                    // Mantém opacidade variada
+                    sprite.material.opacity = THREE.MathUtils.lerp(sprite.material.opacity, 0.4, 0.1);
                 }
 
-                // Reseta a posição quando sai da tela embaixo
+                // Reseta a posição mantendo o alinhamento da coluna
                 if (sprite.position.y < -10) {
                     sprite.position.y = 10;
-                    // Mantém na mesma "coluna" X para parecer chuva vertical
+                    // Ocasionalmente troca o dígito ao resetar para variar a "chuva"
+                    sprite.material.map = Math.random() > 0.5 ? texture0 : texture1;
                 }
             });
             
