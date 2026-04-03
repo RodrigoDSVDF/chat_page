@@ -14,8 +14,8 @@
     <style>
         :root {
             --bg-color: #050508;
-            --assistant-bg: rgba(15, 15, 25, 0.85);
-            --user-bg: rgba(30, 30, 50, 0.7);
+            --assistant-bg: rgba(18, 18, 30, 0.9);
+            --user-bg: rgba(35, 35, 60, 0.8);
             --accent-cyan: #00D4FF;
             --text-main: #FFFFFF;
             --text-dim: #B0B0B0;
@@ -45,8 +45,8 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            line-height: 1.6;
-            overflow: hidden; /* Evita scroll duplo com o chat */
+            line-height: 1.7;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             height: 100vh;
@@ -64,27 +64,27 @@
         }
 
         header {
-            padding: 20px 15px;
+            padding: 25px 15px;
             text-align: center;
-            background: rgba(5, 5, 8, 0.6);
-            backdrop-filter: blur(15px);
+            background: rgba(5, 5, 8, 0.7);
+            backdrop-filter: blur(20px);
             z-index: 100;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             flex-shrink: 0;
         }
 
         header h1 {
             font-weight: 800;
-            font-size: 1.5rem;
-            letter-spacing: 2px;
+            font-size: 1.6rem;
+            letter-spacing: 3px;
             text-transform: uppercase;
             background: var(--metallic-silver);
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.5));
-            animation: silver-shine 5s linear infinite;
+            filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.6));
+            animation: silver-shine 6s linear infinite;
             line-height: 1.2;
             display: inline-block;
         }
@@ -94,85 +94,87 @@
         }
 
         header p {
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             color: var(--text-dim);
-            margin-top: 5px;
-            letter-spacing: 2px;
+            margin-top: 6px;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            opacity: 0.7;
+            opacity: 0.8;
         }
 
         #chat-container {
             flex: 1;
             overflow-y: auto;
-            padding: 15px;
-            max-width: 800px;
+            padding: 25px 20px;
+            max-width: 850px;
             margin: 0 auto;
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 25px;
             z-index: 10;
             scrollbar-width: none;
-            padding-bottom: 120px; /* Espaço para a barra de input */
+            padding-bottom: 140px; 
         }
 
         #chat-container::-webkit-scrollbar { display: none; }
 
         .message {
-            max-width: 88%;
-            padding: 16px 20px;
-            font-size: 0.95rem;
-            animation: fadeIn 0.4s ease-out forwards;
+            max-width: 90%;
+            padding: 22px 28px; /* Aumentado para não ficar próximo da borda */
+            font-size: 1rem;
+            animation: fadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
             word-wrap: break-word;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
             position: relative;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .assistant {
             align-self: flex-start;
             background-color: var(--assistant-bg);
-            border-radius: 4px 20px 200px 20px;
-            border-left: 2px solid rgba(255,255,255,0.3);
+            border-radius: 4px 28px 28px 28px;
+            border-left: 4px solid rgba(255,255,255,0.4);
+            color: #f0f0f0;
         }
 
         .user {
             align-self: flex-end;
             background-color: var(--user-bg);
-            border-radius: 20px 20px 4px 20px;
-            border-right: 2px solid var(--accent-cyan);
+            border-radius: 28px 28px 4px 28px;
+            border-right: 4px solid var(--accent-cyan);
             color: #fff;
         }
 
-        /* BARRA DE INPUT RESPONSIVA */
+        /* BARRA DE INPUT */
         .input-area {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: linear-gradient(to top, var(--bg-color) 80%, transparent);
-            padding: 20px 15px 30px 15px;
+            background: linear-gradient(to top, var(--bg-color) 85%, transparent);
+            padding: 20px 20px 40px 20px;
             z-index: 100;
         }
 
         .input-wrapper {
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
             display: flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(20, 20, 30, 0.95);
-            padding: 6px 6px 6px 15px;
+            gap: 12px;
+            background: rgba(25, 25, 40, 0.98);
+            padding: 8px 8px 8px 24px;
             border-radius: 50px;
-            border: 1px solid rgba(255,255,255,0.15);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.6);
+            backdrop-filter: blur(25px);
         }
 
         input {
@@ -180,79 +182,86 @@
             background: transparent;
             border: none;
             color: white;
-            padding: 10px 0;
-            font-size: 1rem;
+            padding: 12px 0;
+            font-size: 1.05rem;
             outline: none;
-            min-width: 0; /* Impede o input de empurrar o botão no mobile */
+            min-width: 0;
         }
 
         button#send-btn {
             background: var(--metallic-silver);
             border: none;
             color: #000;
-            height: 44px;
-            padding: 0 20px;
+            height: 48px;
+            padding: 0 28px;
             border-radius: 40px;
             font-weight: 800;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-            flex-shrink: 0; /* Garante que o botão não encolha */
+            font-size: 0.8rem;
+            letter-spacing: 1.5px;
+            flex-shrink: 0;
         }
         
         button#send-btn:active {
-            transform: scale(0.95);
-            filter: brightness(0.8);
+            transform: scale(0.92);
+            filter: brightness(0.9);
         }
 
-        /* MOBILE OVERRIDES */
-        @media (max-width: 480px) {
-            header h1 { font-size: 1.2rem; }
-            .message { max-width: 92%; font-size: 0.9rem; padding: 12px 16px; }
-            button#send-btn { padding: 0 15px; font-size: 0.7rem; }
-            .input-area { padding-bottom: 15px; }
+        /* MOBILE OPTIMIZATION */
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.3rem; }
+            #chat-container { padding: 20px 15px 120px 15px; gap: 20px; }
+            .message { max-width: 95%; font-size: 0.95rem; padding: 18px 22px; }
+            button#send-btn { padding: 0 18px; font-size: 0.75rem; height: 44px; }
+            .input-area { padding: 15px 15px 25px 15px; }
+            .input-wrapper { padding-left: 20px; }
         }
 
+        /* CTA FINAL */
         #final-cta {
-            background: rgba(10, 10, 20, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 30px 20px;
-            margin: 10px 0;
+            background: rgba(10, 10, 20, 0.96);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 30px;
+            padding: 40px 30px;
+            margin: 15px 0;
             text-align: center;
             display: none;
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
         }
 
         .cta-title { 
             font-weight: 800; 
-            font-size: 1.4rem; 
-            margin-bottom: 10px;
+            font-size: 1.6rem; 
+            margin-bottom: 12px;
             background: var(--metallic-silver);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .benefits { text-align: left; margin: 20px 0; font-size: 0.85rem; list-style: none; display: inline-block; }
-        .benefits li { margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-        .price .old { text-decoration: line-through; color: #666; font-size: 0.8rem; }
-        .price .new { color: #fff; font-weight: 800; font-size: 1.8rem; display: block; margin: 5px 0; }
+        .benefits { text-align: left; margin: 25px 0; font-size: 0.9rem; list-style: none; display: inline-block; }
+        .benefits li { margin-bottom: 12px; display: flex; align-items: center; gap: 12px; }
+        .price .old { text-decoration: line-through; color: #777; font-size: 0.9rem; }
+        .price .new { color: #fff; font-weight: 800; font-size: 2rem; display: block; margin: 8px 0; }
 
         .nexus-btn {
             display: block;
             width: 100%;
-            padding: 18px;
+            padding: 20px;
             background: var(--gradient-primary);
             color: white;
             text-decoration: none;
-            border-radius: 12px;
+            border-radius: 16px;
             font-weight: 800;
-            font-size: 1rem;
+            font-size: 1.1rem;
             text-transform: uppercase;
-            box-shadow: 0 10px 30px rgba(0, 198, 255, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 198, 255, 0.4);
+            transition: all 0.4s;
         }
+
+        .nexus-btn:hover { transform: scale(1.02); filter: brightness(1.1); }
     </style>
 </head>
 <body>
@@ -268,14 +277,14 @@
         <!-- Mensagens via JS -->
     </main>
 
-    <div id="final-cta-container" style="max-width: 600px; margin: 0 auto; width: 100%; padding: 0 15px; z-index: 10; position: relative;">
+    <div id="final-cta-container" style="max-width: 700px; margin: 0 auto; width: 100%; padding: 0 15px; z-index: 10; position: relative;">
         <div id="final-cta">
-            <div class="cta-title">ACESSO LIBERADO</div>
-            <p style="color: #bbb; font-size: 0.8rem;">Seu novo sistema operacional de inteligência.</p>
+            <div class="cta-title">ACESSO LIBERADO 🔓</div>
+            <p style="color: #bbb; font-size: 0.9rem;">Seu novo sistema operacional de inteligência.</p>
             <ul class="benefits">
-                <li><span>✅</span> <strong>I.A.s de Elite</strong> configuradas</li>
-                <li><span>✅</span> <strong>Metodologia</strong> de Contexto</li>
-                <li><span>✅</span> <strong>Sistemas</strong> de Organização</li>
+                <li><span>✅</span> <strong>I.A.s de Elite</strong> pré-configuradas</li>
+                <li><span>✅</span> <strong>Metodologia</strong> de Engenharia de Contexto</li>
+                <li><span>✅</span> <strong>Workspaces</strong> prontos para uso</li>
             </ul>
             <div class="price">
                 <span class="old">De R$ 97,00</span>
@@ -287,7 +296,7 @@
 
     <div class="input-area" id="input-container">
         <div class="input-wrapper">
-            <input type="text" id="user-input" placeholder="Sua resposta..." autocomplete="off">
+            <input type="text" id="user-input" placeholder="Digite sua resposta..." autocomplete="off">
             <button id="send-btn">ENVIAR</button>
         </div>
     </div>
@@ -301,20 +310,20 @@
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100);
-        camera.position.z = 4;
-        camera.position.y = 1.2;
-        camera.rotation.x = -0.3;
+        camera.position.z = 4.5;
+        camera.position.y = 1.0;
+        camera.rotation.x = -0.25;
 
         const parameters = {
-            count: 25000, // Reduzido para performance mobile
-            size: 0.008,
+            count: 30000,
+            size: 0.007,
             radius: 5,
             branches: 3,
             spin: 1,
             randomness: 0.5,
             randomnessPower: 3,
             insideColor: '#00d4ff',
-            outsideColor: '#5a00ff'
+            outsideColor: '#6a00ff'
         };
 
         let geometry, material, points;
@@ -337,7 +346,7 @@
                 const randomZ = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * parameters.randomness * radius;
 
                 positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
-                positions[i3 + 1] = randomY * 0.5;
+                positions[i3 + 1] = randomY * 0.4;
                 positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
 
                 const mixedColor = colorInside.clone();
@@ -373,7 +382,7 @@
         const clock = new THREE.Clock();
         const animate = () => {
             const elapsedTime = clock.getElapsedTime();
-            points.rotation.y = elapsedTime * 0.05;
+            points.rotation.y = elapsedTime * 0.06;
             renderer.render(scene, camera);
             window.requestAnimationFrame(animate);
         };
@@ -396,7 +405,7 @@
                 currentText += word + " ";
                 element.innerHTML = currentText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
                 chatContainer.scrollTop = chatContainer.scrollHeight;
-                await new Promise(resolve => setTimeout(resolve, 25));
+                await new Promise(resolve => setTimeout(resolve, 20));
             }
         }
 
@@ -420,11 +429,11 @@
 
         function getFluxo(step) {
             const fluxos = {
-                1: `Prazer, **${userName}**! Seja bem-vindo à fronteira da produtividade.\n\nNo **Nexus**, acreditamos que a I.A. veio para libertar o tempo humano.\n\nHoje, você sente que sua produtividade está limitada pela execução manual?`,
-                2: `Exatamente. O **Nexus** une método e I.A. de elite.\n\nVocê prefere aprender a criar suas próprias soluções ou receber as ferramentas prontas?`,
-                3: `O segredo reside na **Engenharia de Contexto**.\n\nNo Nexus, você acessa I.A.s especialistas e sistemas prontos para implementar.\n\nFaz sentido centralizar sua inteligência em um único lugar?`,
-                4: `Essa centralização cria os **Arquitetos de Soluções**.\n\nPosso te mostrar o ecossistema por dentro agora?`,
-                5: `Excelente. Ao entrar no Nexus, você assume o controle.\n\nEstá pronto para elevar seu nível de jogo?`,
+                1: `Prazer, **${userName}**! Seja bem-vindo à fronteira da produtividade.\n\nNo **Nexus**, acreditamos que a I.A. veio para libertar o tempo humano.\n\nHoje, você sente que sua produtividade está limitada pela execução manual de processos?`,
+                2: `É um obstáculo clássico. O **Nexus** resolve isso unindo método e ferramentas de elite.\n\nVocê prefere aprender a criar suas próprias soluções ou prefere receber as ferramentas prontas?`,
+                3: `O segredo reside na **Engenharia de Contexto**.\n\nNo Nexus, você acessa I.A.s especialistas e sistemas otimizados.\n\nFaz sentido centralizar sua inteligência em um único ecossistema?`,
+                4: `Essa centralização transforma usuários comuns em **Arquitetos de Soluções**.\n\nPosso te mostrar o ecossistema por dentro agora?`,
+                5: `Excelente. Ao entrar no Nexus, você assume o comando das melhores tecnologias.\n\nEstá pronto para elevar seu nível de jogo?`,
                 6: `Seja bem-vindo ao futuro, ${userName}.\n\nSeu acesso prioritário está liberado abaixo.`
             };
             return fluxos[step];
@@ -442,7 +451,7 @@
                     userName = nome; step = 1;
                     await addMessage(getFluxo(1), 'assistant');
                 } else {
-                    await addMessage("Desculpe, como posso te chamar?", 'assistant');
+                    await addMessage("Entendido. Mas como posso te chamar para prosseguirmos?", 'assistant');
                 }
             } else {
                 step++;
@@ -455,7 +464,7 @@
                             inputContainer.style.display = 'none';
                             finalCta.style.display = 'block';
                             chatContainer.scrollTop = chatContainer.scrollHeight;
-                        }, 800);
+                        }, 1000);
                     }
                 }
             }
