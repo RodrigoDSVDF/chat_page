@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus | Ecossistema de Alta Performance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Meta Pixel Code (Facebook) -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '640277028566260');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=640277028566260&ev=PageView&noscript=1"
+    /></noscript>
+
+    <style>
+        :root {
+            --bg-color: #0E1117;
+            --assistant-bg: rgba(30, 30, 46, 0.85);
+            --user-bg: rgba(44, 44, 62, 0.85);
+            --accent-cyan: #00D4FF;
+            --accent-purple: #9D00FF;
+            --text-main: #FFFFFF;
+            --text-dim: #B0B0B0;
+            --gradient-primary: linear-gradient(90deg, #00C6FF, #0072FF);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Three.js Canvas Styling */
+        #matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            display: block;
+        }
+
+        header {
+            padding: 20px;
+            text-align: center;
+            background: rgba(14, 17, 23, 0.6);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        header h1 {
+            background: linear-gradient(90deg, #00C6FF, #9D00FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        header p {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        #chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            max-width: 700px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-bottom: 140px;
+            z-index: 10;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 15px 20px;
+            font-size: 0.95rem;
+            position: relative;
+            animation: fadeIn 0.3s ease-out forwards;
+            word-wrap: break-word;
+            backdrop-filter: blur(5px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .assistant {
+            align-self: flex-start;
+            background-color: var(--assistant-bg);
+            border-radius: 0px 15px 15px 15px;
+            border-left: 3px solid var(--accent-cyan);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .user {
+            align-self: flex-end;
+            background-color: var(--user-bg);
+            border-radius: 15px 15px 0px 15px;
+            border-right: 3px solid var(--accent-purple);
+        }
+
+        .input-area {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(transparent, var(--bg-color) 70%);
+            padding: 20px 10px 40px 10px;
+            z-index: 100;
+        }
+
+        .input-wrapper {
+            max-width: 700px;
+            margin: 0 auto;
+            display: flex;
+            gap: 10px;
+            background: rgba(30, 30, 46, 0.9);
+            padding: 5px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 12px 15px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        button#send-btn {
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        #final-cta {
+            background: rgba(22, 22, 37, 0.9);
+            border: 1px solid rgba(0, 198, 255, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+            backdrop-filter: blur(10px);
+        }
+
+        .cta-title { font-weight: 800; font-size: 1.4rem; color: #fff; margin-bottom: 10px; }
+        .benefits { text-align: left; margin: 15px 0; font-size: 0.9rem; list-style: none; }
+        .benefits li { margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+        .price { margin: 15px 0; font-size: 1.1rem; }
+        .price .old { text-decoration: line-through; color: #666; font-size: 0.9rem; }
+        .price .new { color: var(--accent-cyan); font-weight: 800; font-size: 1.6rem; }
+
+        .nexus-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: var(--gradient-primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(0, 198, 255, 0.3);
+            transition: all 0.3s;
+        }
+
+        @media (max-width: 600px) {
+            #chat-container { padding-bottom: 110px; }
+            .input-area { padding-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Three.js Matrix Background -->
+    <canvas id="matrix-bg"></canvas>
+
+    <header>
+        <h1>Ecossistema Nexus</h1>
+        <p>Inteligência Artificial. Metodologia. Alta Performance.</p>
+    </header>
+
+    <main id="chat-container">
+        <!-- Mensagens aparecerão aqui -->
+    </main>
+
+    <div id="final-cta-container" style="max-width: 700px; margin: 0 auto; width: 100%; padding: 0 20px; z-index: 10; position: relative;">
+        <div id="final-cta">
+            <div class="cta-title">🔓 ACESSO LIBERADO</div>
+            <p style="color: #bbb; font-size: 0.85rem;">Sua suite de ferramentas e engenharia de contexto.</p>
+            <ul class="benefits">
+                <li><span>✅</span> I.A.s Especialistas (Por função)</li>
+                <li><span>✅</span> Aulas de Engenharia de Contexto</li>
+                <li><span>✅</span> Ferramentas de Organização</li>
+            </ul>
+            <div class="price">
+                <span class="old">De R$ 97,00</span> por <span class="new">R$ 47,00</span>
+            </div>
+            <a href="https://app.nexus-manual.com.br" target="_blank" class="nexus-btn">ENTRAR NO NEXUS 🚀</a>
+            <div style="margin-top: 15px; font-size: 0.8rem; color: #888;">@nexus0rigin</div>
+        </div>
+    </div>
+
+    <div class="input-area" id="input-container">
+        <div class="input-wrapper">
+            <input type="text" id="user-input" placeholder="Responda aqui..." autocomplete="off">
+            <button id="send-btn">ENVIAR</button>
+        </div>
+    </div>
+
+    <script>
+        // --- THREE.JS MATRIX BACKGROUND LOGIC ---
+        const canvas = document.getElementById('matrix-bg');
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+
+        const digits = ['0', '1'];
+        const digitCount = 1000;
+        const digitGeometries = digits.map(d => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 64;
+            canvas.height = 64;
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 48px monospace';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(d, 32, 32);
+            const texture = new THREE.CanvasTexture(canvas);
+            return new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0.2 });
+        });
+
+        const sprites = [];
+        for (let i = 0; i < digitCount; i++) {
+            const material = digitGeometries[Math.floor(Math.random() * 2)];
+            const sprite = new THREE.Sprite(material);
+            
+            sprite.position.set(
+                (Math.random() - 0.5) * 15,
+                (Math.random() - 0.5) * 15,
+                (Math.random() - 0.5) * 10
+            );
+            
+            sprite.scale.set(0.15, 0.15, 1);
+            sprite.userData = { speed: 0.02 + Math.random() * 0.05 };
+            
+            scene.add(sprite);
+            sprites.push(sprite);
+        }
+
+        function animateMatrix() {
+            sprites.forEach(sprite => {
+                sprite.position.y -= sprite.userData.speed;
+                // Coloração baseada na posição (cyan e purple da marca)
+                const colorVal = (sprite.position.y + 7.5) / 15;
+                if (Math.random() > 0.995) sprite.material.opacity = 0.8; // Flicker
+                else sprite.material.opacity = 0.2;
+
+                if (sprite.position.y < -7.5) {
+                    sprite.position.y = 7.5;
+                    sprite.position.x = (Math.random() - 0.5) * 15;
+                }
+            });
+            renderer.render(scene, camera);
+            requestAnimationFrame(animateMatrix);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        window.addEventListener('resize', onWindowResize);
+        onWindowResize();
+        animateMatrix();
+
+        // --- CHAT LOGIC ---
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const finalCta = document.getElementById('final-cta');
+        const inputContainer = document.getElementById('input-container');
+
+        let step = 0;
+        let userName = "";
+
+        const empatia = [
+            "Sua visão está alinhada com o futuro. O caos da informação exige organização. 🌌",
+            "Exato. A produtividade real vem da clareza, e é isso que vamos construir. 🧠",
+            "Perfeito. Ferramenta sem método é apenas ruído. Você busca a sinfonia. 🎻"
+        ];
+
+        function scrollToBottom() {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
+        }
+
+        async function typeText(text, element) {
+            const words = text.split(" ");
+            let currentText = "";
+            for (const word of words) {
+                currentText += word + " ";
+                element.innerHTML = currentText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>') + "▌";
+                scrollToBottom();
+                await new Promise(resolve => setTimeout(resolve, 35));
+            }
+            element.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+        }
+
+        async function addMessage(text, role) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message', role);
+            chatContainer.appendChild(msgDiv);
+            if (role === 'assistant') await typeText(text, msgDiv);
+            else msgDiv.innerText = text;
+            scrollToBottom();
+        }
+
+        function extrairNome(input) {
+            const patterns = [
+                /(?:meu nome é|sou o|sou a|me chamo)\s*([A-Za-zÀ-ÿ]+)/i,
+                /^[Oo]l[aá],?\s*([A-Za-zÀ-ÿ]+)/i,
+                /^([A-Za-zÀ-ÿ]{3,})/i
+            ];
+            for (let pattern of patterns) {
+                const match = input.match(pattern);
+                if (match && match[1]) return match[1].charAt(0).toUpperCase() + match[1].slice(1).toLowerCase();
+            }
+            return "";
+        }
+
+        function getFluxo(step) {
+            const randomEmpatia = empatia[Math.floor(Math.random() * empatia.length)];
+            const fluxos = {
+                1: `Prazer, **${userName}**! Seja bem-vindo à fronteira da produtividade.\n\nMuitos pensam que a I.A. veio para substituir o humano, mas no **Nexus**, acreditamos que ela veio para *libertá-lo*.\n\nHoje, você sente que passa mais tempo executando tarefas repetitivas do que realmente criando e planejando projetos importantes?`,
+                2: `Esse é o dilema moderno: temos acesso a tudo, mas não temos tempo para nada.\n\nO **Nexus não é apenas um curso**. É um **Ecossistema Completo**.\n\nO que mais te atrai: ter ferramentas prontas ou aprender a metodologia por trás delas?`,
+                3: `Entendi. O segredo é a **Engenharia de Contexto**.\n\nNo Ecossistema Nexus, você recebe:\n🧬 **I.A.s Especialistas** treinadas;\n🎓 **Academy Nexus** com aulas estratégicas;\n🗂️ **Organizadores Inteligentes**.\n\nFaz sentido ter um 'quartel general' digital?`,
+                4: `Essa centralização gera Alta Performance.\n\nQueremos que você pare de ser um 'operador' e se torne o **Arquiteto de Soluções**.\n\nPosso te mostrar como funciona o acesso hoje?`,
+                5: `Excelente.\n\nAo entrar no Nexus, você acessa uma plataforma viva com I.A.s configuradas para Copy, Dados e Gestão.\n\nVocê está pronto para assumir esse controle?`,
+                6: `Decisão sábia, ${userName}. ${randomEmpatia}\n\nO valor para manter esse ecossistema é simbólico perto do tempo que você ganha de volta.\n\nSeu acesso está liberado abaixo.`
+            };
+            return fluxos[step];
+        }
+
+        async function handleSend() {
+            const text = userInput.value.trim();
+            if (!text) return;
+            userInput.value = "";
+            await addMessage(text, 'user');
+
+            if (step === 0) {
+                const nomeExtraido = extrairNome(text);
+                if (nomeExtraido) {
+                    userName = nomeExtraido;
+                    step = 1;
+                    await addMessage(getFluxo(1), 'assistant');
+                } else {
+                    await addMessage("Como posso te chamar para personalizarmos sua experiência?", 'assistant');
+                }
+            } else {
+                step++;
+                await addMessage(getFluxo(step) || "Estou aqui para ajudar!", 'assistant');
+                if (step >= 6) {
+                    inputContainer.style.display = 'none';
+                    setTimeout(() => {
+                        finalCta.style.display = 'block';
+                        scrollToBottom();
+                        if(window.fbq) fbq('track', 'Lead');
+                    }, 800);
+                }
+            }
+        }
+
+        sendBtn.addEventListener('click', handleSend);
+        userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
+
+        window.onload = async () => {
+            await new Promise(r => setTimeout(r, 600));
+            await addMessage("👋 Olá! Sou o **Artheris**, o Guardião do Ecossistema Nexus.\n\nQual é o seu nome para iniciarmos?", 'assistant');
+        };
+    </script>
+</body>
+</html>
